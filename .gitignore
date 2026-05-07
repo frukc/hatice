@@ -4,3 +4,5 @@ dist/
 .env
 .env.*
 PRD*.md
+WORKFLOW.md
+start.sh
