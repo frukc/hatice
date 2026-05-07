@@ -113,6 +113,7 @@ export interface AgentConfig {
   maxRetryBackoffMs: number;
   maxConcurrentAgentsByState: Record<string, number>;
   retryOnNormalExit: boolean;
+  completionState: string;
 }
 
 export interface ClaudeConfig {

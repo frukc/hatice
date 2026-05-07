@@ -149,6 +149,13 @@ export class Orchestrator extends EventEmitter<haticeEvents> {
       if (!activeStates.has(normalizedState)) return false;
       if (terminalStates.has(normalizedState)) return false;
 
+      // Issue is currently active in tracker. If we previously completed it,
+      // the human has clearly re-opened it — drop the stale completion mark
+      // so the standard claimed/running/completed checks below can re-dispatch.
+      if (this.state.isCompleted(issue.id)) {
+        this.state.clearCompleted(issue.id);
+      }
+
       // Must not have active blockers
       if (this.hasActiveBlockers(issue, terminalStates)) return false;
 
@@ -344,10 +351,11 @@ export class Orchestrator extends EventEmitter<haticeEvents> {
           }
 
           try {
-            await this.tracker.updateIssueState(issueId, 'Done');
-            this.log.info({ issueId }, 'Updated issue state to Done');
+            const targetState = this.config.agent.completionState;
+            await this.tracker.updateIssueState(issueId, targetState);
+            this.log.info({ issueId, targetState }, 'Updated issue state');
           } catch (e) {
-            this.log.warn({ err: e, issueId }, 'Failed to update issue state to Done');
+            this.log.warn({ err: e, issueId }, 'Failed to update issue state');
           }
 
           // Keep workspace after completion so code changes are preserved

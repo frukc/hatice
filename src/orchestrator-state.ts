@@ -57,6 +57,11 @@ export class OrchestratorState extends EventEmitter {
     return this.completed.has(issueId);
   }
 
+  /** Drop an issue from the completed set so it can be re-dispatched. */
+  clearCompleted(issueId: string): boolean {
+    return this.completed.delete(issueId);
+  }
+
   updateTokenUsage(issueId: string, usage: TokenUsage): void {
     const entry = this.running.get(issueId);
     if (entry) {

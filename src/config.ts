@@ -41,6 +41,7 @@ const agentSchema = z.object({
   maxRetryBackoffMs: z.number().default(300_000),
   maxConcurrentAgentsByState: z.record(z.string(), z.number()).default({}),
   retryOnNormalExit: z.boolean().default(false),
+  completionState: z.string().default("Done"),
 });
 
 const claudeSchema = z.object({
@@ -79,6 +80,7 @@ const haticeConfigSchema = z.object({
     maxRetryBackoffMs: 300_000,
     maxConcurrentAgentsByState: {},
     retryOnNormalExit: false,
+    completionState: "Done",
   }),
   claude: claudeSchema.default({
     model: null,
